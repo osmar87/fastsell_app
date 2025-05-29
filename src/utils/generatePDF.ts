@@ -31,7 +31,7 @@ export const generatePDF = (cartItems: Product[], total: number) => {
     }),
   });
 
-  const finalY = doc.lastAutoTable.finalY || 40;
+  const finalY = (doc as any).lastAutoTable?.finalY || 40;
   doc.setFontSize(12);
   doc.text(`Total do Pedido: R$ ${total.toFixed(2).replace('.', ',')}`, 14, finalY + 10);
 
