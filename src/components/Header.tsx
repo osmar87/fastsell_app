@@ -7,7 +7,7 @@ import logo from '../imagens/logo.png';
 import { useCart } from '@/contexts/CartContext';
 import { useSearch } from "@/contexts/SearchContext";
 
-import { generatePDF } from '@/utils/generatePDF';
+// import { generatePDF } from '@/utils/generatePDF';
 
 
 export default function Header() {
@@ -40,7 +40,7 @@ export default function Header() {
 
   const handleFinishOrder = () => {
     handleSendWhatsApp()
-    generatePDF(cart, total); // 🔥 Gera o PDF
+    // generatePDF(cart, total); // 🔥 Gera o PDF
     clearCart();              // 🗑️ Limpa o carrinho
     setCartOpen(false);       // ❌ Fecha o modal do carrinho
   };

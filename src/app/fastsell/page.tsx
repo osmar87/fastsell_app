@@ -33,8 +33,7 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Estado do carrinho
-  const [cart, setCart] = useState<CartItem[]>([]);
+
 
   // Estado das quantidades por produto
   const [quantities, setQuantities] = useState<{ [codigo: number]: number }>({});
