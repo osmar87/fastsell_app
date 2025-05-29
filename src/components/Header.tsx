@@ -120,9 +120,9 @@ export default function Header() {
               </a>
             </li>
             <li>
-              <a href="#" onClick={() =>{ logout()}} className="text-white hover:text-blue-400 block text-center">
-                Contato
-              </a>
+              <button onClick={() =>{ logout()}} className="text-white hover:text-blue-400 block text-center">
+                Sair
+              </button>
             </li>
           </ul>
         </nav>

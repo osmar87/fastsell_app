@@ -55,7 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setRefreshToken(null);
     localStorage.removeItem("access");
     localStorage.removeItem("refresh");
-    router.push("/login");
+    router.push("/");
   };
 
   const isAuthenticated = !!accessToken;

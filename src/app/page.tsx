@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-
+import { useRouter } from "next/navigation";
+import PacmanLoader from "@/components/PacmanLoader";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -11,6 +12,15 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true); // 👈 Estado para verificar token
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem('access');
+    if (token) {
+      router.push('/fastsell');
+    }
+  }, [router]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -24,6 +34,12 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+
+  // 👉 Loader enquanto verifica token
+  if (checkingAuth) {
+    return <PacmanLoader/>
   }
 
   return (

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ShoppingCart } from 'lucide-react';
 import { useCart } from "@/contexts/CartContext"
 import { useSearch } from '@/contexts/SearchContext';
+import PacmanLoader from '@/components/PacmanLoader';
 
 
 type Product = {
@@ -106,7 +107,7 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       {loading ? (
-        <p className="text-gray-600">Carregando produtos...</p>
+        <PacmanLoader />
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : products.length === 0 ? (
