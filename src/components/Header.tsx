@@ -14,7 +14,7 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const { cart, cartCount, total, removeFromCart, clearCart } = useCart();
- 
+  
 
   const handleSendWhatsApp = () => {
     const phone = "5575992073047"; // Coloque seu número com DDD e sem espaços
@@ -39,7 +39,7 @@ export default function Header() {
 
 
   const handleFinishOrder = () => {
-   );
+    
     handleSendWhatsApp()
     clearCart();              // 🗑️ Limpa o carrinho
     setCartOpen(false);       // ❌ Fecha o modal do carrinho
