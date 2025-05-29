@@ -7,7 +7,6 @@ import logo from '../imagens/logo.png';
 import { useCart } from '@/contexts/CartContext';
 import { useSearch } from "@/contexts/SearchContext";
 
-// import { generatePDF } from '@/utils/generatePDF';
 
 
 export default function Header() {
@@ -15,9 +14,10 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const { cart, cartCount, total, removeFromCart, clearCart } = useCart();
+  const [telefone, setTelefone] = useState("");
 
   const handleSendWhatsApp = () => {
-    const phone = "5575992073047"; // Coloque seu número com DDD e sem espaços
+    const phone = telefone; // Coloque seu número com DDD e sem espaços
 
     const message = `🛒 *Pedido realizado!*\n\n${cart
       .map(
@@ -28,7 +28,7 @@ export default function Header() {
       )
       .join("\n")}\n\n💰 *Total:* R$ ${total
         .toFixed(2)
-        .replace(".", ",")}\n\n Pix:75992073047 \n\n Apois o envio do comprovante  caso tudo certo com o pagamento \n\n Seu pedido entrar em processo de separação e em sequida vc receberar um mensagem de confirmação status do pedido  \n\n📍 *Endereço:* (Preencher)\n\nObrigado pelo pedido! 🙌`;
+        .replace(".", ",")}\n\n Obrigado pelo pedido! 🙌`;
 
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
@@ -39,8 +39,13 @@ export default function Header() {
 
 
   const handleFinishOrder = () => {
+    const tel = prompt("Informe seu telefone:");
+    if (!tel) {
+      alert("Telefone não informado.");
+      return;
+    }
+    setTelefone(tel);
     handleSendWhatsApp()
-    // generatePDF(cart, total); // 🔥 Gera o PDF
     clearCart();              // 🗑️ Limpa o carrinho
     setCartOpen(false);       // ❌ Fecha o modal do carrinho
   };
@@ -184,7 +189,7 @@ export default function Header() {
                         onClick={() => handleFinishOrder()}
                         className="bg-green-500 text-white px-3 py-1 rounded"
                       >
-                        Finalizar Pedido (PDF)
+                        Finalizar
                       </button>
 
                       <button
