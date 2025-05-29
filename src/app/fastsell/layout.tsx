@@ -15,9 +15,9 @@ export default function RootLayout({
  const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('access');
     if (!token) {
-      router.push('/login');
+      router.push('/');
     }
   }, [router]);
 
