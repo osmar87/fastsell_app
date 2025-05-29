@@ -1,8 +1,11 @@
+"use client";
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
-
+import { useRouter } from 'next/navigation';
+import { useEffect } from "react";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -26,6 +29,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem('access');
+    if (token) {
+      router.push('/fastsell');
+    }
+  }, [router]);
   return (
     <html lang="pt-BR">
       <head>

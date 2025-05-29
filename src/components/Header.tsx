@@ -6,10 +6,12 @@ import Image from 'next/image';
 import logo from '../imagens/logo.png';
 import { useCart } from '@/contexts/CartContext';
 import { useSearch } from "@/contexts/SearchContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 
 
 export default function Header() {
+  const { logout } = useAuth()
   const { searchTerm, setSearchTerm } = useSearch();
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
@@ -118,7 +120,7 @@ export default function Header() {
               </a>
             </li>
             <li>
-              <a href="#" className="text-white hover:text-blue-400 block text-center">
+              <a href="#" onClick={() =>{ logout()}} className="text-white hover:text-blue-400 block text-center">
                 Contato
               </a>
             </li>
