@@ -19,6 +19,8 @@ export default function LoginPage() {
     const token = localStorage.getItem('access');
     if (token) {
       router.push('/fastsell');
+    }else {
+      setCheckingAuth(false)
     }
   }, [router]);
 
