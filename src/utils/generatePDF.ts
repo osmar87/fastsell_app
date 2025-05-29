@@ -29,7 +29,7 @@ export const generatePDF = (cartItems: Product[], total: number) => {
   });
 
   // Cast para 'any' porque lastAutoTable não está tipado no jsPDF oficialmente
-  const finalY = (doc as any).lastAutoTable?.finalY || 40;
+  const finalY = doc.lastAutoTable?.finalY || 40;
 
   doc.setFontSize(12);
   doc.text(`Total do Pedido: R$ ${total.toFixed(2).replace('.', ',')}`, 14, finalY + 10);
@@ -37,6 +37,6 @@ export const generatePDF = (cartItems: Product[], total: number) => {
   doc.setFontSize(10);
   doc.text("Aguarde nosso contato via WhatsApp para confirmação do pedido.", 14, finalY + 20);
 
-  const timestamp = new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
+  const timestamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
   doc.save(`pedido_${timestamp}.pdf`);
 };
