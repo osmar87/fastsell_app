@@ -17,7 +17,7 @@ export default function Header() {
   const [telefone, setTelefone] = useState("");
 
   const handleSendWhatsApp = () => {
-    const phone = telefone; // Coloque seu número com DDD e sem espaços
+    const phone = "5575992073047"; // Coloque seu número com DDD e sem espaços
 
     const message = `🛒 *Pedido realizado!*\n\n${cart
       .map(
