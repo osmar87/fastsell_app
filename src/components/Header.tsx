@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { Menu, X, ShoppingCart, Trash2 } from 'lucide-react';
+import { Menu, X, ShoppingCart, Trash2, Cat } from 'lucide-react';
 import Image from 'next/image';
 import logo from '../imagens/logo.png';
 import { useCart } from '@/contexts/CartContext';
 import { useSearch } from "@/contexts/SearchContext";
 import { useAuth } from "@/contexts/AuthContext";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 
 
@@ -16,7 +18,51 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const { cart, cartCount, total, removeFromCart, clearCart } = useCart();
-  
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [clientName, setClientName] = useState("");
+  const [clientAddress, setClientAddress] = useState("");
+
+
+
+  const gerarPDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text("Recibo de Venda", 14, 22);
+    doc.setFontSize(12);
+    doc.text("Empresa XYZ - Endereço da Empresa", 14, 30);
+    doc.text(`Data: ${new Date().toLocaleString()}`, 14, 38);
+    doc.text(`Cliente: ${clientName}`, 14, 46);
+    doc.text(`Endereço: ${clientAddress}`, 14, 54);
+    doc.line(14, 60, 200, 60);
+
+    const tableData = cart.map((item) => [
+      item.name,
+      item.quantity.toString(),
+      `R$ ${Number(item.price).toFixed(2)}`,
+      `R$ ${(Number(item.price) * item.quantity).toFixed(2)}`
+    ]);
+
+    autoTable(doc, {
+      startY: 65,
+      head: [["Produto", "Qtd", "Preço Unitário", "Subtotal"]],
+      body: tableData
+    });
+
+    const data = new Date();
+    const dataFormatada = `${data.getFullYear()}-${(data.getMonth() + 1)
+      .toString()
+      .padStart(2, '0')}-${data.getDate().toString().padStart(2, '0')}_${data
+        .getHours()
+        .toString()
+        .padStart(2, '0')}-${data.getMinutes().toString().padStart(2, '0')}`;
+
+    const finalY = (doc as any).lastAutoTable.finalY || 70;
+    doc.text(`Total: R$ ${total.toFixed(2)}`, 14, finalY + 10);
+    // Salvar o PDF com a data no nome
+    doc.save(`recibo-${dataFormatada}.pdf`);
+  };
+
 
   const handleSendWhatsApp = () => {
     const phone = "5575992073047"; // Coloque seu número com DDD e sem espaços
@@ -41,11 +87,20 @@ export default function Header() {
 
 
   const handleFinishOrder = () => {
-    
-    handleSendWhatsApp()
-    clearCart();              // 🗑️ Limpa o carrinho
-    setCartOpen(false);       // ❌ Fecha o modal do carrinho
+    setCartOpen(false);
+
+    // gerarPDF()
+    setIsModalOpen(true);
+    // handleSendWhatsApp()
+    // ❌ Fecha o modal do carrinho
   };
+
+  const handleConfirm = () => {
+    gerarPDF();
+    setIsModalOpen(false);
+    clearCart();              // 🗑️ Limpa o carrinho
+  };
+
 
 
   return (
@@ -120,13 +175,59 @@ export default function Header() {
               </a>
             </li>
             <li>
-              <button onClick={() =>{ logout()}} className="text-white hover:text-blue-400 block text-center">
+              <button onClick={() => { logout() }} className="text-white hover:text-blue-400 block text-center">
                 Sair
               </button>
             </li>
           </ul>
         </nav>
       </header>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-bold mb-4">Dados do Cliente</h2>
+
+            <label className="block mb-2">
+              Nome
+              <input
+                type="text"
+                value={clientName}
+                onChange={(e) => setClientName(e.target.value)}
+                className="w-full border rounded p-2 mt-1"
+                placeholder="Digite o nome do cliente"
+              />
+            </label>
+
+            <label className="block mb-4">
+              Endereço
+              <input
+                type="text"
+                value={clientAddress}
+                onChange={(e) => setClientAddress(e.target.value)}
+                className="w-full border rounded p-2 mt-1"
+                placeholder="Digite o endereço"
+              />
+            </label>
+
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleConfirm}
+                className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
 
       {/* 🔥 Modal do Carrinho */}
       {cartOpen && (

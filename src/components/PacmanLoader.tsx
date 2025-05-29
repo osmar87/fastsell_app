@@ -2,8 +2,6 @@ const PacmanLoader = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900">
       <div className="flex items-center space-x-2">
-    
-
         {/* Dots container */}
         <div className="flex space-x-2">
           {/* Individual dots */}
