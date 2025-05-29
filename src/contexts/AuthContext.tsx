@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("access", data.access);
     localStorage.setItem("refresh", data.refresh);
 
-    router.push("/dashboard");
+    router.push("/fastsell");
   };
 
   // Função de logout
