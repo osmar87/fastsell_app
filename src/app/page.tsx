@@ -3,6 +3,7 @@
 import { useState, FormEvent } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
+
 export default function LoginPage() {
   const { login } = useAuth();
 

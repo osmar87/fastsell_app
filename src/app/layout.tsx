@@ -14,9 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Controle de Estoque",
-  description: "Sistema de controle de estoque com Next.js",
-};
+  title: 'Fast Sell',
+  description: 'Sistema de vendas rápido e prático',
+  themeColor: '#2563eb',
+  // Nota: `manifest` não é uma propriedade oficial do Metadata em Next.js,
+  // então precisa linkar manualmente no head.
+}
 
 export default function RootLayout({
   children,
@@ -24,8 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt">
-      <head />
+    <html lang="pt-BR">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#333333" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AuthProvider>
           {children}
