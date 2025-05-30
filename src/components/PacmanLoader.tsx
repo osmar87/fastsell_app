@@ -1,68 +1,35 @@
+'use client';
+
 const PacmanLoader = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900">
-      <div className="flex items-center space-x-2">
-        {/* Dots container */}
-        <div className="flex space-x-2">
-          {/* Individual dots */}
-          <div className="w-4 h-4 rounded-full bg-yellow-400 animate-dot-fade" style={{ animationDelay: '0s' }}></div>
-          <div className="w-4 h-4 rounded-full bg-yellow-400 animate-dot-fade" style={{ animationDelay: '0.2s' }}></div>
-          <div className="w-4 h-4 rounded-full bg-yellow-400 animate-dot-fade" style={{ animationDelay: '0.4s' }}></div>
-          <div className="w-4 h-4 rounded-full bg-yellow-400 animate-dot-fade" style={{ animationDelay: '0.6s' }}></div>
-        </div>
+    // O contêiner principal para o loader.
+    // Ele usa flexbox para centralizar as bolinhas.
+    <div className="flex items-center justify-center p-8">
+      {/* Contêiner das bolinhas: Contém as "bolinhas" que o Pacman comeria. */}
+      <div className="relative w-40 h-4 flex items-center justify-between"> {/* Aumentado o width para as bolinhas se espalharem mais */}
+        {/* Bolinhas individuais: Cada bolinha é posicionada absolutamente para animação independente. */}
+        <div className="absolute w-4 h-4 rounded-full bg-gray-400 dot" style={{ animationDelay: '0s' }}></div>
+        <div className="absolute w-4 h-4 rounded-full bg-gray-400 dot" style={{ animationDelay: '0.2s' }}></div>
+        <div className="absolute w-4 h-4 rounded-full bg-gray-400 dot" style={{ animationDelay: '0.4s' }}></div>
+        <div className="absolute w-4 h-4 rounded-full bg-gray-400 dot" style={{ animationDelay: '0.6s' }}></div>
       </div>
 
-      {/* Custom animations. Removed 'jsx' and 'global' attributes from style tag to fix warnings. */}
+      {/* CSS personalizado para as animações das bolinhas. */}
       <style>{`
-        @keyframes pacman-mouth {
-          0% {
-            transform: rotate(0deg);
-          }
-          50% {
-            transform: rotate(20deg); /* Adjust mouth open angle */
-          }
-          100% {
-            transform: rotate(0deg);
-          }
+        /* Animação das bolinhas:
+           As bolinhas se movem da direita para a esquerda e desaparecem,
+           simulando que estão sendo "comidas".
+        */
+        .dot {
+          animation: dot-move-fade 1s infinite linear;
+          left: 100%; /* Inicia as bolinhas fora da tela à direita */
         }
 
-        @keyframes pacman-mouth-triangle {
-          0% {
-            transform: rotate(320deg) scale(1); /* Changed from -360deg to 320deg */
-          }
-          50% {
-            transform: rotate(320deg) scale(0.8); /* Adjust mouth open angle */
-          }
-          100% {
-            transform: rotate(320deg) scale(1);
-          }
-        }
-
-        @keyframes dot-fade {
-          0% {
-            opacity: 1;
-            transform: translateX(0);
-          }
-          50% {
-            opacity: 0;
-            transform: translateX(-20px); /* Move dot left as it fades */
-          }
-          100% {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        .animate-pacman-mouth {
-          animation: pacman-mouth 0.8s infinite alternate;
-        }
-
-        .animate-pacman-mouth-triangle {
-          animation: pacman-mouth-triangle 0.8s infinite alternate;
-        }
-
-        .animate-dot-fade {
-          animation: dot-fade 1.2s infinite;
+        /* Keyframes para o movimento e o fade das bolinhas. */
+        @keyframes dot-move-fade {
+          0% { transform: translateX(0); opacity: 1; } /* Inicia visível na posição original */
+          75% { transform: translateX(-160px); opacity: 0; } /* Move para a esquerda e desaparece */
+          100% { transform: translateX(0); opacity: 1; } /* Reinicia a posição para o próximo ciclo */
         }
       `}</style>
     </div>
