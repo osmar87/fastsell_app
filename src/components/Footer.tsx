@@ -2,6 +2,15 @@ import Link from "next/link";
 import { LayoutDashboard, Code } from 'lucide-react'; // Importando ícones para o footer
 
 export default function Footer() {
+
+  const handleSendWhatsApp = () => {
+    const phone = "5575992073047";
+    const message = `Muito obrigado pelo seu contato! Em breve, retornaremos com mais informações. Estamos à disposição para te ajudar no que for preciso.`;
+
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
+  };
+
   return (
     <footer className="bg-gradient-to-r from-gray-800 to-gray-900 text-gray-200 py-6 shadow-inner font-inter">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between px-6">
@@ -24,15 +33,13 @@ export default function Footer() {
           </Link>
 
           {/* Link para Desenvolvedor */}
-          <a
-            href="https://gomesweb87.xyz"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={handleSendWhatsApp}
             className="flex items-center gap-2 text-gray-300 hover:text-blue-400 transition-colors duration-200 group"
           >
             <Code size={18} className="text-blue-300 group-hover:text-blue-400 transition-colors duration-200" />
             <span className="font-medium">Desenvolvido por GomesWeb</span>
-          </a>
+          </button>
         </div>
       </div>
       {/* Custom CSS for font consistency */}
