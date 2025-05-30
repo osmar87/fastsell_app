@@ -58,15 +58,15 @@ export default function Header() {
     doc.save(`recibo-${dataFormatada}.pdf`);
   };
 
-  const handleSendWhatsApp = () => {
-    const phone = "5575992073047";
-    const message = `🛒 *Pedido realizado!*\n\n${cart.map(
-      item => `• ${item.name} - ${item.quantity}x - R$ ${(item.price * item.quantity).toFixed(2).replace(".", ",")}`
-    ).join("\n")}\n\n💰 *Total:* R$ ${total.toFixed(2).replace(".", ",")}\n\n Obrigado pelo pedido! 🙌`;
+  // const handleSendWhatsApp = () => {
+  //   const phone = "5575992073047";
+  //   const message = `🛒 *Pedido realizado!*\n\n${cart.map(
+  //     item => `• ${item.name} - ${item.quantity}x - R$ ${(item.price * item.quantity).toFixed(2).replace(".", ",")}`
+  //   ).join("\n")}\n\n💰 *Total:* R$ ${total.toFixed(2).replace(".", ",")}\n\n Obrigado pelo pedido! 🙌`;
 
-    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank");
-  };
+  //   const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  //   window.open(url, "_blank");
+  // };
 
   const handleFinishOrder = () => {
     setCartOpen(false);
@@ -75,7 +75,7 @@ export default function Header() {
 
   const handleConfirm = () => {
     gerarPDF();
-    handleSendWhatsApp();
+    // handleSendWhatsApp();
     setIsModalOpen(false);
     clearCart();
   };
