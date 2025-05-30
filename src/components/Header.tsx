@@ -24,39 +24,114 @@ export default function Header() {
 
  
 
-  const gerarPDF = () => {
-    const doc = new jsPDF();
+  // 
+  
+  const gerarPDFAprimorado = () => {
+    const doc = new jsPDF(); // Inicializa um novo documento PDF
 
-    doc.setFontSize(18);
-    doc.text("Recibo de Venda", 14, 22);
+    // --- Seção do Cabeçalho do Recibo ---
+    // Você pode adicionar um logo aqui se tiver um. Exemplo:
+    // doc.addImage("caminho/para/seu/logo.png", "PNG", 14, 10, 30, 15);
+    doc.setFontSize(22);
+    doc.setTextColor(30, 144, 255); // Cor azul vibrante para o título
+    doc.text("RECIBO DE VENDA", 105, 30, { align: 'center' }); // Centraliza o título
+
+    doc.setFontSize(10);
+    doc.setTextColor(80, 80, 80); // Cor cinza escuro para detalhes da empresa
+    doc.text("Empresa XYZ Ltda. - CNPJ: 00.123.456/0001-99", 14, 40);
+    doc.text("Endereço: Rua Comercial, 123 - Centro - Cidade, Estado - CEP 12345-678", 14, 45);
+    doc.text("Telefone: (DD) XXXX-XXXX | Email: contato@empresaxyz.com.br", 14, 50);
+
+    // Linha separadora
+    doc.setDrawColor(200, 200, 200); // Cor da linha
+    doc.setLineWidth(0.5); // Espessura da linha
+    doc.line(14, 57, 196, 57);
+
+    // --- Informações do Recibo (Número e Data) ---
+    doc.setFontSize(10);
+    doc.setTextColor(0); // Volta para preto
+    const receiptNumber = `REC-${Math.floor(Math.random() * 100000).toString().padStart(5, '0')}`;
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString('pt-BR');
+    const formattedTime = currentDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+    doc.text(`Nº do Recibo: ${receiptNumber}`, 14, 65);
+    doc.text(`Data e Hora: ${formattedDate} às ${formattedTime}`, 14, 70);
+
+    // --- Informações do Cliente ---
     doc.setFontSize(12);
-    doc.text("Empresa XYZ - Endereço da Empresa", 14, 30);
-    doc.text(`Data: ${new Date().toLocaleString()}`, 14, 38);
-    doc.text(`Cliente: ${clientName}`, 14, 46);
-    doc.text(`Endereço: ${clientAddress}`, 14, 54);
-    doc.line(14, 60, 200, 60);
+    doc.setTextColor(30, 144, 255); // Azul para o título da seção do cliente
+    doc.text("DADOS DO CLIENTE:", 14, 80);
+    doc.setFontSize(10);
+    doc.setTextColor(0);
+    doc.text(`Nome: ${clientName}`, 14, 88);
+    doc.text(`Endereço: ${clientAddress}`, 14, 93);
 
-    const tableData = cart.map(item => [
-      item.name,
-      item.quantity.toString(),
-      `R$ ${Number(item.price).toFixed(2)}`,
-      `R$ ${(Number(item.price) * item.quantity).toFixed(2)}`
+    // Linha separadora
+    doc.line(14, 98, 196, 98);
+
+    // --- Tabela de Itens ---
+    const tableHeaders = [["Produto", "Qtd", "Preço Unitário", "Subtotal"]];
+    const tableBody = cart.map(item => [
+        item.name,
+        item.quantity.toString(),
+        `R$ ${Number(item.price).toFixed(2).replace('.', ',')}`,
+        `R$ ${(Number(item.price) * item.quantity).toFixed(2).replace('.', ',')}`
     ]);
 
+    // Configurações e estilo da tabela
     autoTable(doc, {
-      startY: 65,
-      head: [["Produto", "Qtd", "Preço Unitário", "Subtotal"]],
-      body: tableData
+        startY: 105, // Posição inicial da tabela
+        head: tableHeaders,
+        body: tableBody,
+        theme: 'striped', // Tema da tabela: 'striped', 'grid', 'plain'
+        styles: {
+            fontSize: 9,
+            cellPadding: 3,
+            valign: 'middle',
+            halign: 'left',
+            textColor: [50, 50, 50] // Cor do texto das células
+        },
+        headStyles: {
+            fillColor: [30, 144, 255], // Azul escuro para o cabeçalho
+            textColor: 255, // Texto branco no cabeçalho
+            fontStyle: 'bold',
+            halign: 'center' // Alinhamento central para o cabeçalho
+        },
+        alternateRowStyles: {
+            fillColor: [248, 248, 248] // Cinza claro para linhas alternadas
+        },
+        columnStyles: {
+            0: { cellWidth: 'auto', halign: 'left' }, // Produto
+            1: { cellWidth: 20, halign: 'center' },   // Qtd
+            2: { cellWidth: 35, halign: 'right' },    // Preço Unitário
+            3: { cellWidth: 40, halign: 'right' }     // Subtotal
+        },
+        // Adiciona rodapé a cada página (se a tabela for muito longa)
+        
     });
 
-    const finalY = (doc as any).lastAutoTable.finalY || 70;
-    doc.text(`Total: R$ ${total.toFixed(2)}`, 14, finalY + 10);
+    // --- Seção do Total Geral ---
+    const finalY = (doc as any).lastAutoTable.finalY; // Pega a posição Y final da tabela
+    doc.setFontSize(16);
+    doc.setTextColor(0);
+    doc.setFont("helvetica", "bold"); // Deixa o total em negrito
+    doc.text(`TOTAL GERAL: R$ ${total.toFixed(2).replace('.', ',')}`, doc.internal.pageSize.width - 14, finalY + 15, { align: 'right' });
 
-    const data = new Date();
-    const dataFormatada = `${data.getFullYear()}-${(data.getMonth() + 1).toString().padStart(2, '0')}-${data.getDate().toString().padStart(2, '0')}_${data.getHours().toString().padStart(2, '0')}-${data.getMinutes().toString().padStart(2, '0')}`;
+    // --- Área de Observações / Assinatura ---
+    doc.setFontSize(10);
+    doc.setTextColor(80, 80, 80);
+    doc.setFont("helvetica", "normal");
+    doc.text("Observações: Este recibo é um comprovante de venda. Não aceitamos devoluções após 7 dias.", 14, finalY + 30);
 
-    doc.save(`recibo-${dataFormatada}.pdf`);
-  };
+    doc.line(doc.internal.pageSize.width / 2 - 40, finalY + 50, doc.internal.pageSize.width / 2 + 40, finalY + 50); // Linha para assinatura
+    doc.text("Assinatura do Cliente", doc.internal.pageSize.width / 2, finalY + 55, { align: 'center' });
+
+
+    // --- Salvando o PDF ---
+    doc.save(`recibo-${receiptNumber}.pdf`);
+};
+
 
   // const handleSendWhatsApp = () => {
   //   const phone = "5575992073047";
@@ -74,7 +149,7 @@ export default function Header() {
   };
 
   const handleConfirm = () => {
-    gerarPDF();
+    gerarPDFAprimorado();
     // handleSendWhatsApp();
     setIsModalOpen(false);
     clearCart();
