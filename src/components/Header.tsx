@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Menu, X, ShoppingCart, Search, Home, Package, Info, LogOut, User, MapPin } from 'lucide-react'; // Added more icons
+import { Menu, X, ShoppingCart, Search, BarChart, Package, Info, LogOut, User, MapPin } from 'lucide-react'; // Added more icons
 import Image from 'next/image';
 // Assuming 'logo' is correctly imported from '../imagens/logo.png'
 import logo from '../imagens/logo.png'; // This import needs to be handled externally or replaced with a placeholder
@@ -226,8 +226,8 @@ export default function Header() {
         <nav className={`bg-gray-800 transition-all duration-300 ease-in-out ${menuOpen ? 'max-h-screen opacity-100 py-3' : 'max-h-0 opacity-0 overflow-hidden md:max-h-screen md:opacity-100 md:py-3'}`}>
           <ul className="max-w-7xl mx-auto flex flex-col md:flex-row justify-center md:space-x-8 space-y-2 md:space-y-0 px-4 md:px-0">
             {[
-              // { name: 'Início', icon: <Home size={18} />, href: '#' },
-              { name: 'Produtos', icon: <Package size={18} />, href: '/fastsell' },
+              { name: 'Início', icon: <BarChart size={18} />, href: '/fastsell' },
+              { name: 'Produtos', icon: <Package size={18} />, href: '/fastsell/pdv' },
               // { name: 'Sobre', icon: <Info size={18} />, href: '#' },
             ].map((item) => (
               <li key={item.name}>
