@@ -10,6 +10,7 @@ import { useSearch } from "@/contexts/SearchContext";
 import { useAuth } from "@/contexts/AuthContext";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import axios from "axios";
 
 export default function Header() {
   const { logout } = useAuth();
@@ -22,11 +23,11 @@ export default function Header() {
   const [clientName, setClientName] = useState('');
   const [clientAddress, setClientAddress] = useState('');
 
- 
+
 
   // 
-  
-  const gerarPDFAprimorado = () => {
+
+  const gerarPDFAprimorado = (codigo: string) => {
     const doc = new jsPDF(); // Inicializa um novo documento PDF
 
     // --- Seção do Cabeçalho do Recibo ---
@@ -50,7 +51,7 @@ export default function Header() {
     // --- Informações do Recibo (Número e Data) ---
     doc.setFontSize(10);
     doc.setTextColor(0); // Volta para preto
-    const receiptNumber = `REC-${Math.floor(Math.random() * 100000).toString().padStart(5, '0')}`;
+    const receiptNumber = `${codigo}`;
     const currentDate = new Date();
     const formattedDate = currentDate.toLocaleDateString('pt-BR');
     const formattedTime = currentDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -73,42 +74,42 @@ export default function Header() {
     // --- Tabela de Itens ---
     const tableHeaders = [["Produto", "Qtd", "Preço Unitário", "Subtotal"]];
     const tableBody = cart.map(item => [
-        item.name,
-        item.quantity.toString(),
-        `R$ ${Number(item.price).toFixed(2).replace('.', ',')}`,
-        `R$ ${(Number(item.price) * item.quantity).toFixed(2).replace('.', ',')}`
+      item.name,
+      item.quantity.toString(),
+      `R$ ${Number(item.price).toFixed(2).replace('.', ',')}`,
+      `R$ ${(Number(item.price) * item.quantity).toFixed(2).replace('.', ',')}`
     ]);
 
     // Configurações e estilo da tabela
     autoTable(doc, {
-        startY: 105, // Posição inicial da tabela
-        head: tableHeaders,
-        body: tableBody,
-        theme: 'striped', // Tema da tabela: 'striped', 'grid', 'plain'
-        styles: {
-            fontSize: 9,
-            cellPadding: 3,
-            valign: 'middle',
-            halign: 'left',
-            textColor: [50, 50, 50] // Cor do texto das células
-        },
-        headStyles: {
-            fillColor: [30, 144, 255], // Azul escuro para o cabeçalho
-            textColor: 255, // Texto branco no cabeçalho
-            fontStyle: 'bold',
-            halign: 'center' // Alinhamento central para o cabeçalho
-        },
-        alternateRowStyles: {
-            fillColor: [248, 248, 248] // Cinza claro para linhas alternadas
-        },
-        columnStyles: {
-            0: { cellWidth: 'auto', halign: 'left' }, // Produto
-            1: { cellWidth: 20, halign: 'center' },   // Qtd
-            2: { cellWidth: 35, halign: 'right' },    // Preço Unitário
-            3: { cellWidth: 40, halign: 'right' }     // Subtotal
-        },
-        // Adiciona rodapé a cada página (se a tabela for muito longa)
-        
+      startY: 105, // Posição inicial da tabela
+      head: tableHeaders,
+      body: tableBody,
+      theme: 'striped', // Tema da tabela: 'striped', 'grid', 'plain'
+      styles: {
+        fontSize: 9,
+        cellPadding: 3,
+        valign: 'middle',
+        halign: 'left',
+        textColor: [50, 50, 50] // Cor do texto das células
+      },
+      headStyles: {
+        fillColor: [30, 144, 255], // Azul escuro para o cabeçalho
+        textColor: 255, // Texto branco no cabeçalho
+        fontStyle: 'bold',
+        halign: 'center' // Alinhamento central para o cabeçalho
+      },
+      alternateRowStyles: {
+        fillColor: [248, 248, 248] // Cinza claro para linhas alternadas
+      },
+      columnStyles: {
+        0: { cellWidth: 'auto', halign: 'left' }, // Produto
+        1: { cellWidth: 20, halign: 'center' },   // Qtd
+        2: { cellWidth: 35, halign: 'right' },    // Preço Unitário
+        3: { cellWidth: 40, halign: 'right' }     // Subtotal
+      },
+      // Adiciona rodapé a cada página (se a tabela for muito longa)
+
     });
 
     // --- Seção do Total Geral ---
@@ -130,7 +131,7 @@ export default function Header() {
 
     // --- Salvando o PDF ---
     doc.save(`recibo-${receiptNumber}.pdf`);
-};
+  };
 
 
   // const handleSendWhatsApp = () => {
@@ -149,7 +150,33 @@ export default function Header() {
   };
 
   const handleConfirm = () => {
-    gerarPDFAprimorado();
+    const token = localStorage.getItem('access');
+    
+    const codigo = `VENDA${Date.now()}`; // Geração automática
+    gerarPDFAprimorado(codigo);
+
+    const payload = {
+      codigo: codigo,
+      itens: cart.map(item => ({
+        codigo: codigo,
+        produto: item.name,
+        quantidade: item.quantity,
+        preco: item.price
+      }))
+    };
+
+    axios.post("https://fastsell.gomesweb87.xyz/api/pedido/", payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => {
+        console.log('✅ Pedido criado com sucesso:', res.data);
+      })
+      .catch(err => {
+        console.error('❌ Erro ao criar pedido:', err);
+      });
     // handleSendWhatsApp();
     setIsModalOpen(false);
     clearCart();
